@@ -76,5 +76,53 @@ EOT
       received_debit = string
     }))
   }))
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.canceled == null || (v.evidence.canceled.product_type == null || (contains(["merchandise", "service"], v.evidence.canceled.product_type))))
+      )
+    ])
+    error_message = "must be one of: \"merchandise\", \"service\""
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.canceled == null || (v.evidence.canceled.return_status == null || (contains(["merchant_rejected", "successful"], v.evidence.canceled.return_status))))
+      )
+    ])
+    error_message = "must be one of: \"merchant_rejected\", \"successful\""
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.merchandise_not_as_described == null || (v.evidence.merchandise_not_as_described.return_status == null || (contains(["merchant_rejected", "successful"], v.evidence.merchandise_not_as_described.return_status))))
+      )
+    ])
+    error_message = "must be one of: \"merchant_rejected\", \"successful\""
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.not_received == null || (v.evidence.not_received.product_type == null || (contains(["merchandise", "service"], v.evidence.not_received.product_type))))
+      )
+    ])
+    error_message = "must be one of: \"merchandise\", \"service\""
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.other == null || (v.evidence.other.product_type == null || (contains(["merchandise", "service"], v.evidence.other.product_type))))
+      )
+    ])
+    error_message = "must be one of: \"merchandise\", \"service\""
+  }
+  validation {
+    condition = alltrue([
+      for k, v in var.issuing_disputes : (
+        v.evidence == null || (v.evidence.reason == null || (contains(["canceled", "duplicate", "fraudulent", "merchandise_not_as_described", "no_valid_authorization", "not_received", "other", "service_not_as_described"], v.evidence.reason)))
+      )
+    ])
+    error_message = "must be one of: \"canceled\", \"duplicate\", \"fraudulent\", \"merchandise_not_as_described\", \"no_valid_authorization\", \"not_received\", \"other\", \"service_not_as_described\""
+  }
 }
 
